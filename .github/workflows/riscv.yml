@@ -1,0 +1,32 @@
+name: RISC-V 64
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_linux_riscv64:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install toolchain
+        run: |
+          sudo apt install -yq ant gcc-9 g++-9 xorg-dev libgtk-3-dev libglu-dev libgl1-mesa-glx libx11-dev gcc-9-riscv64-linux-gnu g++-9-riscv64-linux-gnu libc6-dev-riscv64-cross
+          pip3 install --user awscli
+          export PATH=$PATH:$HOME/.local/bin
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'liberica'
+          java-version: '8'
+      - name: Install RISC-V 64 dependencies
+        run: |
+          sudo rm -rf /etc/apt/sources.list
+          sudo sh -c "echo 'deb https://ftp.ports.debian.org/debian-ports/ sid main' >> /etc/apt/sources.list"
+          sudo dpkg --add-architecture riscv64
+          sudo apt-get update || true
+          sudo apt-get -yq --allow-unauthenticated install libglu-dev:riscv64 libgl1-mesa-glx:riscv64 libx11-dev:riscv64 libdrm2:riscv64 libglapi-mesa:riscv64 libgl1-mesa-dev:riscv64 libgl-dev:riscv64 -o Dpkg::Options::="--force-overwrite"
+      - name: Build
+        run: |
+          export LWJGL_BUILD_TYPE=nightly
+          export LWJGL_BUILD_ARCH=riscv64
+          ant compile-templates compile-native -Dgcc.version=9 -Dgcc.libpath.opengl=/usr/lib/riscv64-linux-gnu/mesa
+          ant compile release
