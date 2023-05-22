@@ -51,7 +51,20 @@ typedef enum ffi_abi {
     FFI_UNUSED_3,
     FFI_LAST_ABI,
 
-    FFI_DEFAULT_ABI = FFI_SYSV
+    FFI_DEFAULT_ABI = FFI_SYSV,
+// LWJGL
+  FFI_WIN64 = -1,
+  FFI_GNUW64 = -1,
+  FFI_UNIX64 = -1,
+  FFI_EFI64 = -1,
+//FFI_SYSV = -1,
+  FFI_STDCALL = -1,
+  FFI_THISCALL = -1,
+  FFI_FASTCALL = -1,
+  FFI_MS_CDECL = -1,
+  FFI_PASCAL = -1,
+  FFI_REGISTER = -1,
+  FFI_VFP = -1
 } ffi_abi;
 
 #endif /* LIBFFI_ASM */
